@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      // global variable
+      var tipo_de_vista = 0;
+      // contenedor
+      // divImgL divImgR divImgC1 divImgC2
+      // imgImgL imgImgR imgImgC1 imgImgC2
+      // parseInt("100px"); => devuelve 100
+      function imgViewer( archivo, ext, ancho, alto ) {
+        var ancho = parseInt(ancho); alto = parseInt(alto);
+        // contenedor
+        document.getElementById("contenedor").style.width = ancho * 2 + "px";
+        document.getElementById("contenedor").style.height = alto + "px";
+        // divImgL
+        ////document.getElementById("divImgL").style.left = "0px";
+        document.getElementById("divImgL").style.width = ancho + "px";
+        document.getElementById("divImgL").style.height = alto + 20 + "px";
+        document.getElementById("imgImgL").src = archivo + "_l." + ext;
+        // divImgR
+        ////document.getElementById("divImgR").style.left = ancho + "px";
+        document.getElementById("divImgR").style.width = ancho + "px";
+        document.getElementById("divImgR").style.height = alto + 10 + "px";
+        document.getElementById("imgImgR").src = archivo + "_r." + ext;
+
+        parallelView();
+
+        //document.getElementById("info").innerHTML = archivo;
+      }
+
+      function parallelView() {
+        clearInterval( killWiggleStepper );
+        document.getElementById("divImgL").style.visibility = "visible";
+        document.getElementById("divImgR").style.visibility = "visible";
+        var ancho = document.getElementById("imgImgL").width
+        document.getElementById("divImgL").style.left = "0px";
+        document.getElementById("divImgR").style.left = ancho + "px";
+        document.getElementById("info").innerHTML = "parallel view";
+      }
+
+      function crossedEyeView() {
+        var ancho = document.getElementById("imgImgL").width
+        document.getElementById("divImgL").style.left = ancho + "px";
+        document.getElementById("divImgR").style.left = "0px";
+        document.getElementById("info").innerHTML = "crossed-eye view";
+      }
+
+      function anaglyphView() {
+        var ancho = document.getElementById("imgImgL").width
+        document.getElementById("divImgL").style.left = ancho/2 + "px";
+        document.getElementById("divImgR").style.left = ancho/2 + "px";
+        document.getElementById("imgImgL").style.filter = "url(#leftLinearProjection)";
+        document.getElementById("imgImgR").style.filter = "url(#rightLinearProjection)";
+        document.getElementById("divImgL").style.mixBlendMode = "screen";
+        document.getElementById("divImgR").style.mixBlendMode = "screen";
+        document.getElementById("info").innerHTML = "anaglyph view";
+      }
+
+      var killWiggleStepper;
+      function wiggleView() {
+        document.getElementById("divImgL").style.mixBlendMode = "normal";
+        document.getElementById("divImgR").style.mixBlendMode = "normal";
+        document.getElementById("imgImgL").style.filter = "";
+        document.getElementById("imgImgR").style.filter = "";
+        var ancho = document.getElementById("imgImgL").width
+        document.getElementById("divImgL").style.left = ancho/2 + "px";
+        document.getElementById("divImgR").style.left = ancho/2 + "px";
+        document.getElementById("info").innerHTML = "wiggle view";
+        killWiggleStepper = setInterval(wiggleStepper, 200);
+      }
+
+      var varWiggleStepper = "right";
+      function wiggleStepper() {
+        if ( varWiggleStepper == "right" ) {
+          document.getElementById("divImgR").style.visibility = "visible";
+          document.getElementById("divImgL").style.visibility = "hidden";
+          varWiggleStepper = "left";
+        }
+        else {
+          document.getElementById("divImgL").style.visibility = "visible";
+          document.getElementById("divImgR").style.visibility = "hidden";
+          varWiggleStepper = "right";
+        }
+      }
+
+
+      function changeView(){
+        //document.getElementById("info").innerHTML = tipo_de_vista;
+        tipo_de_vista ++;
+        if ( tipo_de_vista == 4 ) tipo_de_vista = 0;
+        if ( tipo_de_vista == 0 ) parallelView();
+        if ( tipo_de_vista == 1 ) crossedEyeView();
+        if ( tipo_de_vista == 2 ) anaglyphView();
+        if ( tipo_de_vista == 3 ) wiggleView();
+      }
+
+
+      function canaglyphView(imagenID) {
+        //document.getElementById("demo").innerHTML = imageId;
+        document.getElementById(imagenID+"cajonera").style.display = "grid";
+        document.getElementById(imagenID+"cajonera").style.gridTemplateColumns = "auto";
+        document.getElementById(imagenID+"cajonL").style.position = "absolute";
+        document.getElementById(imagenID+"cajonL2").style.position = "absolute";
+        document.getElementById(imagenID+"cajonL").src = "cherries_l.jpeg";
+        document.getElementById(imagenID+"cajonL").style.width = "50%";
+        document.getElementById(imagenID+"cajonL").style.mixBlendMode = "screen";
+        document.getElementById(imagenID+"cajonL2").src = "cherries_r.jpeg";
+        document.getElementById(imagenID+"cajonL2").style.width = "50%";
+        document.getElementById(imagenID+"cajonL2").style.mixBlendMode = "screen";
+        document.getElementById(imagenID+"cajonR").src = "";
+        document.getElementById(imagenID+"cajonR").style.width = "50%";
+      }
+
+    </script>
+  </head>
+
+  <body>
+    
+    <!-- ========== TRUCO PARA FORZAR LA CARGA DE LA IMAGEN ====== -->
+    <!-- de momento, no interesa
+    <img id="invisible" style="display: none" onload = "calculos()">
+    <script>document.getElementById('invisible').src = 'felix_OK.png'</script>
+    -->
+    <!-- ========== EL TEXTO DE LA PÁGINA EMPIEZA AQUÍ =========== -->
+    <h1>3D multi viewer</h1>
+    <p id="info">:P 2023 raphik</p>
+    <div id="contenedor" style="position:relative; width:0; height:0;" onclick="changeView()">
+
+      <div id="divImgL" style="position:absolute;">
+        <img id="imgImgL" width="100%">
+      </div>
+      <div id="divImgR" style="position:absolute;">
+        <img id="imgImgR" width="100%">
+      </div>
+    </div>
+
+    <script>imgViewer("cherries", "jpeg", "800px", "652px")</script>
+  </body>
+
+  <svg width=0 height=0>
+    <filter id="leftLinearProjection"><feColorMatrix type="matrix"
+      values="+0.3224 +0.4951 +0.2534 0 0
+              -0.0436 -0.0616 -0.0460 0 0
+              -0.0393 -0.0606 +0.0017 0 0
+               0.0000  0.0000  0.0000 1 0" />
+    </filter>
+    <filter id="rightLinearProjection"><feColorMatrix type="matrix"
+      values="-0.0121 -0.0472 -0.0115 0 0
+              +0.2847 +0.8588 +0.0077 0 0
+              -0.0009 -0.0614 +1.1605 0 0
+               0.0000  0.0000  0.0000 1 0" />
+    </filter>
+  </svg>
+</html>
+
+
+
