@@ -1,0 +1,14 @@
+<svg width=0 height=0>
+  <filter id="leftLinearProjection"><feColorMatrix type="matrix"
+   values="+0.3224 +0.4951 +0.2534 0 0
+           -0.0436 -0.0616 -0.0460 0 0
+           -0.0393 -0.0606 +0.0017 0 0
+            0.0000  0.0000  0.0000 1 0" />
+  </filter>
+  <filter id="rightLinearProjection"><feColorMatrix type="matrix"
+   values="-0.0121 -0.0472 -0.0115 0 0
+           +0.2847 +0.8588 +0.0077 0 0
+           -0.0009 -0.0614 +1.1605 0 0
+            0.0000  0.0000  0.0000 1 0" />
+  </filter>
+</svg>
